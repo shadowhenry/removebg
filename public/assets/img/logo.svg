@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 36" width="160" height="36">
+  <circle cx="18" cy="18" r="17" fill="#DEE2E7"/>
+  <circle cx="18" cy="18" r="15.6" fill="#ffffff"/>
+  <circle cx="18" cy="22.8" r="5.7" fill="#161616"/>
+  <circle cx="21.5" cy="19.2" r="2.1" fill="#ffffff"/>
+  <circle cx="55" cy="18" r="17" fill="#DEE2E7"/>
+  <circle cx="55" cy="18" r="15.6" fill="#ffffff"/>
+  <circle cx="55" cy="22.8" r="5.7" fill="#161616"/>
+  <circle cx="58.5" cy="19.2" r="2.1" fill="#ffffff"/>
+  <text x="80" y="25" font-family="'Helvetica Neue', Helvetica, Arial, 'PingFang SC', sans-serif" font-size="20" font-weight="700" letter-spacing="-0.4" fill="#1b2430">remove<tspan fill="#2f6bff">bg</tspan></text>
+</svg>

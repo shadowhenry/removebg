@@ -1,0 +1,7 @@
+# Cloudflare Pages 响应头
+# 开启跨源隔离（crossOriginIsolated），解锁 SharedArrayBuffer，
+# 让 ONNX Runtime WASM 多线程推理（手机端提速数倍）。
+# 兼容性：不支持 COEP 的旧浏览器会忽略该头，自动回退单线程，不影响功能。
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp

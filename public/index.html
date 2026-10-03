@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>removebg — 图片背景消除｜100% 全自动且免费</title>
+<meta name="description" content="removebg：在浏览器里一键消除图片背景。本地 AI 模型推理，图片不上传服务器，隐私不出本机。可安装到桌面／主屏幕离线使用。">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+
+<!-- PWA -->
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="removebg">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+<link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml">
+<link rel="mask-icon" href="./assets/img/favicon.svg" color="#2f7cff">
+
+<link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+
+<!-- ───────────────────────── 顶栏 ───────────────────────── -->
+<header class="topbar">
+  <a class="brand" href="./" id="brand" aria-label="removebg 首页">
+    <span class="brand__eyes" aria-hidden="true">
+      <svg class="eye" viewBox="0 0 24 24" width="26" height="26">
+        <circle cx="12" cy="12" r="12" fill="#DEE2E7"/>
+        <circle cx="12" cy="12" r="11" fill="#ffffff"/>
+        <g class="eye-ball">
+          <circle class="eye-inner" cx="12" cy="12" r="4" fill="#161616"/>
+          <circle class="eye-glare" cx="14.5" cy="9.5" r="1.5" fill="#ffffff"/>
+        </g>
+      </svg>
+      <svg class="eye" viewBox="0 0 24 24" width="26" height="26">
+        <circle cx="12" cy="12" r="12" fill="#DEE2E7"/>
+        <circle cx="12" cy="12" r="11" fill="#ffffff"/>
+        <g class="eye-ball">
+          <circle class="eye-inner" cx="12" cy="12" r="4" fill="#161616"/>
+          <circle class="eye-glare" cx="14.5" cy="9.5" r="1.5" fill="#ffffff"/>
+        </g>
+      </svg>
+    </span>
+    <span class="brand__text">remove<b>bg</b></span>
+  </a>
+
+  <div class="topbar__right">
+    <button class="btn-install" id="btn-install" hidden>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 17v2.5a1.5 1.5 0 0 0 1.5 1.5h13a1.5 1.5 0 0 0 1.5-1.5V17"/>
+      </svg>
+      <span>安装到桌面</span>
+    </button>
+  </div>
+</header>
+
+<!-- ───────────────────────── 首页 ───────────────────────── -->
+<main class="view view--home" id="view-home">
+  <section class="hero">
+    <!-- 演示组件：原图 → 去背景，GIF 自动循环播放 -->
+    <div class="demo" id="demo">
+      <div class="demo__frame">
+        <img class="demo__video" src="./assets/media/demo.gif" alt="演示：一键去除图片背景" fetchpriority="high">
+      </div>
+    </div>
+
+    <h1 class="hero__title">图片背景消除</h1>
+    <p class="hero__sub">100% 全自动且 <span class="pill">免费</span></p>
+  </section>
+
+  <section class="uploader">
+    <div class="drop-card" id="drop-card">
+      <button type="button" class="btn-primary btn-primary--lg" id="btn-upload">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></svg>
+        <span>上传图片</span>
+      </button>
+      <p class="drop-card__hint">或者拖拽一个文件，</p>
+      <p class="drop-card__sub" role="button" tabindex="0">粘贴图片或 URL</p>
+      <div class="drop-card__glow" aria-hidden="true"></div>
+    </div>
+
+    <div class="samples">
+      <p class="samples__label">没有图片？<br>试试这些图片：</p>
+      <ul class="samples__list" id="samples-list">
+        <li><button type="button" class="sample" data-src="./assets/img/sample-1.jpg" title="人物"><img src="./assets/img/sample-1.jpg" alt="人物示例"><span class="sample__tag">人物</span></button></li>
+        <li><button type="button" class="sample" data-src="./assets/img/sample-2.jpg" title="宠物"><img src="./assets/img/sample-2.jpg" alt="宠物示例"><span class="sample__tag">宠物</span></button></li>
+        <li><button type="button" class="sample" data-src="./assets/img/sample-3.jpg" title="汽车"><img src="./assets/img/sample-3.jpg" alt="汽车示例"><span class="sample__tag">汽车</span></button></li>
+        <li><button type="button" class="sample" data-src="./assets/img/sample-4.jpg" title="美妆"><img src="./assets/img/sample-4.jpg" alt="美妆示例"><span class="sample__tag">美妆</span></button></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer">2026 © Removebg.sooo.ooo — All right reserved.</footer>
+</main>
+
+<!-- ───────────────────────── 编辑器 ───────────────────────── -->
+<main class="view view--editor" id="view-editor" hidden>
+
+  <button type="button" class="back-btn" id="btn-back">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <span>返回</span>
+  </button>
+
+  <div class="toolbar" role="toolbar" aria-label="编辑工具">
+    <div class="toolbar__group">
+      <button type="button" class="tool" data-panel="background">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 17 4.6-4.6a2 2 0 0 1 2.8 0L20 20"/></svg>
+        <span>背景</span>
+      </button>
+      <button type="button" class="tool" data-panel="effects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/><path d="M12 3v18"/></svg>
+        <span>效果</span>
+      </button>
+    </div>
+
+    <span class="toolbar__divider" aria-hidden="true"></span>
+
+    <div class="toolbar__group">
+      <button type="button" class="tool" data-panel="adjust">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>
+        <span>调整</span>
+      </button>
+      <button type="button" class="tool" data-panel="design">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M9 10v10"/></svg>
+        <span>设计</span>
+      </button>
+    </div>
+
+    <span class="toolbar__divider" aria-hidden="true"></span>
+
+    <div class="toolbar__group toolbar__actions">
+      <button type="button" class="icon-btn" id="btn-fit" title="适应窗口">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="btn-undo" title="撤销" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="btn-redo" title="重做" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg>
+      </button>
+    </div>
+
+    <div class="download" id="download">
+      <button type="button" class="btn-primary btn-primary--sm" id="btn-download">
+        <span>下载</span>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="menu" id="download-menu" hidden>
+        <p class="menu__title">下载格式</p>
+        <label class="menu__row"><input type="radio" name="fmt" value="image/png" checked><span>PNG</span><em>透明背景</em></label>
+        <label class="menu__row"><input type="radio" name="fmt" value="image/jpeg"><span>JPG</span><em>体积最小</em></label>
+        <label class="menu__row"><input type="radio" name="fmt" value="image/webp"><span>WebP</span><em>体积中等</em></label>
+        <div class="menu__sep"></div>
+        <label class="menu__row menu__row--range" id="quality-row" hidden>
+          <span>画质</span><input type="range" id="quality" min="50" max="100" value="90"><b id="quality-val">90</b>
+        </label>
+        <div class="menu__sep"></div>
+        <button type="button" class="btn-primary btn-primary--full" id="btn-do-download">下载图片</button>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="toolbar__more" id="toolbar-more" aria-label="滑动查看更多工具" hidden>
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>
+  </button>
+
+  <!-- 工具面板 -->
+  <div class="panel" id="panel" hidden>
+    <button type="button" class="panel__close" id="panel-close" title="收起">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+
+    <!-- 背景 -->
+    <div class="panel__body" data-body="background" hidden>
+      <h3 class="panel__title">背景</h3>
+      <div class="seg seg--tight" data-seg="bgtype">
+        <button type="button" class="seg__item is-active" data-value="transparent">透明</button>
+        <button type="button" class="seg__item" data-value="color">纯色</button>
+        <button type="button" class="seg__item" data-value="gradient">渐变</button>
+        <button type="button" class="seg__item" data-value="image">图片</button>
+      </div>
+
+      <div class="panel__block" data-block="color">
+        <p class="label">颜色</p>
+        <div class="swatches" id="swatches"></div>
+        <label class="row"><span>自定义</span><input type="color" id="bg-color" value="#ffffff"></label>
+      </div>
+
+      <div class="panel__block" data-block="gradient" hidden>
+        <div class="row"><span>起始色</span><input type="color" id="grad-color1" value="#2f7cff"></div>
+        <div class="row"><span>结束色</span><input type="color" id="grad-color2" value="#8f5cff"></div>
+        <label class="row row--range"><span>角度</span><input type="range" id="grad-angle" min="0" max="360" value="135"><b id="grad-angle-val">135°</b></label>
+      </div>
+
+      <div class="panel__block" data-block="image" hidden>
+        <button type="button" class="btn-ghost" id="btn-bg-image">选择背景图片</button>
+        <label class="row row--range"><span>模糊</span><input type="range" id="bg-blur" min="0" max="30" value="0"><b id="bg-blur-val">0</b></label>
+        <label class="row row--range"><span>不透明度</span><input type="range" id="bg-opacity" min="10" max="100" value="100"><b id="bg-opacity-val">100</b></label>
+      </div>
+    </div>
+
+    <!-- 效果 -->
+    <div class="panel__body" data-body="effects" hidden>
+      <h3 class="panel__title">效果</h3>
+      <label class="row row--range"><span>阴影强度</span><input type="range" id="fx-shadow" min="0" max="60" value="0"><b id="fx-shadow-val">0</b></label>
+      <label class="row row--range"><span>描边宽度</span><input type="range" id="fx-outline" min="0" max="24" value="0"><b id="fx-outline-val">0</b></label>
+      <div class="row"><span>描边颜色</span><input type="color" id="fx-outline-color" value="#ffffff"></div>
+      <label class="row row--range"><span>主体模糊</span><input type="range" id="fx-blur" min="0" max="20" value="0"><b id="fx-blur-val">0</b></label>
+      <label class="row row--range"><span>圆角</span><input type="range" id="fx-radius" min="0" max="200" value="0"><b id="fx-radius-val">0</b></label>
+    </div>
+
+    <!-- 调整 -->
+    <div class="panel__body" data-body="adjust" hidden>
+      <h3 class="panel__title">调整</h3>
+      <label class="row row--range"><span>亮度</span><input type="range" id="adj-brightness" min="50" max="150" value="100"><b id="adj-brightness-val">100</b></label>
+      <label class="row row--range"><span>对比度</span><input type="range" id="adj-contrast" min="50" max="150" value="100"><b id="adj-contrast-val">100</b></label>
+      <label class="row row--range"><span>饱和度</span><input type="range" id="adj-saturate" min="0" max="200" value="100"><b id="adj-saturate-val">100</b></label>
+      <label class="row row--range"><span>色相</span><input type="range" id="adj-hue" min="-180" max="180" value="0"><b id="adj-hue-val">0°</b></label>
+      <button type="button" class="btn-ghost" id="btn-adj-reset">重置调整</button>
+    </div>
+
+    <!-- 设计 -->
+    <div class="panel__body" data-body="design" hidden>
+      <h3 class="panel__title">设计</h3>
+      <p class="label">画布比例</p>
+      <div class="seg seg--wrap" data-seg="ratio">
+        <button type="button" class="seg__item is-active" data-value="original">原始</button>
+        <button type="button" class="seg__item" data-value="1:1">1:1</button>
+        <button type="button" class="seg__item" data-value="4:5">4:5</button>
+        <button type="button" class="seg__item" data-value="16:9">16:9</button>
+        <button type="button" class="seg__item" data-value="9:16">9:16</button>
+        <button type="button" class="seg__item" data-value="banner">横幅</button>
+      </div>
+      <label class="row row--range"><span>边距</span><input type="range" id="ds-padding" min="0" max="30" value="6"><b id="ds-padding-val">6%</b></label>
+      <label class="row row--range"><span>主体缩放</span><input type="range" id="ds-scale" min="40" max="140" value="100"><b id="ds-scale-val">100%</b></label>
+      <div class="seg seg--tight" data-seg="flip">
+        <button type="button" class="seg__item" data-value="none">不翻转</button>
+        <button type="button" class="seg__item" data-value="h">水平翻转</button>
+        <button type="button" class="seg__item" data-value="v">垂直翻转</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 画布 -->
+  <div class="stage" id="stage">
+    <div class="canvas-wrap" id="canvas-wrap">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="stage__hint" id="stage-hint" hidden>首次运行正在准备本地模型…</div>
+  </div>
+
+  <!-- 底部胶片条 -->
+  <div class="filmstrip">
+    <button type="button" class="filmstrip__add" id="btn-add" title="添加图片">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <ul class="filmstrip__list" id="filmstrip-list"></ul>
+  </div>
+</main>
+
+<!-- 全窗口拖拽提示 -->
+<div class="dropzone" id="dropzone" hidden aria-hidden="true">
+  <div class="dropzone__card">
+    <span class="dropzone__ic">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></svg>
+    </span>
+    <p>松开即可上传</p>
+    <small>支持 PNG · JPG · WebP · 可多张</small>
+  </div>
+</div>
+
+<!-- 处理进度 -->
+<div class="overlay" id="overlay" hidden>
+  <div class="progress-card">
+    <div class="progress-card__spinner" aria-hidden="true"></div>
+    <p class="progress-card__stage" id="progress-stage">正在处理…</p>
+    <div class="progress-card__bar"><i id="progress-fill"></i></div>
+    <p class="progress-card__meta" id="progress-meta">0%</p>
+    <p class="progress-card__hint" id="progress-hint">图片不会离开本机</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<input type="file" id="file-input" accept="image/*" multiple hidden>
+<input type="file" id="bg-image-input" accept="image/*" hidden>
+
+<script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>

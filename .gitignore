@@ -1,0 +1,6 @@
+# 部署到 Cloudflare 时排除（Wrangler 会读取 .gitignore）
+.workbuddy/
+tools/
+node_modules/
+*.log
+.DS_Store

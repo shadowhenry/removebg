@@ -1,0 +1,12 @@
+# Cloudflare Workers + Static Assets 配置
+# 纯静态站点：HTML/CSS/JS + service worker + manifest，无后端代码
+name = "removebg"
+compatibility_date = "2026-10-02"
+
+[assets]
+# 静态资源目录为项目根（index.html 所在目录）
+directory = "."
+# 未匹配到静态文件时回退到 index.html（对 hash 路由无害，对未来 history 路由友好）
+not_found_handling = "single-page-application"
+# 注：纯静态（无 main 脚本）的 assets-only Worker 不能配 binding；
+#     以后若要加后端代码，再补 main 脚本并加回 binding = "ASSETS"。

@@ -1,0 +1,7 @@
+# Cloudflare Workers Static Assets 专用忽略文件（不依赖 git）
+# 这些文件/目录只在本地开发有用，不应部署到边缘
+.workbuddy/
+tools/
+node_modules/
+*.log
+.DS_Store
