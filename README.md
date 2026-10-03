@@ -1,4 +1,4 @@
-# removebg · 图片背景消除
+<h1 align="center"><img src="assets/img/favicon.svg" alt="removebg logo" width="36" height="36" align="middle"> removebg · 图片背景消除</h1>
 
 100% 全自动、免费、**纯浏览器本地运行**的图片背景消除工具。图片永远不离开你的设备——抠图模型下载后完全在本机推理，可离线使用。
 
