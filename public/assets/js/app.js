@@ -106,6 +106,8 @@ async function processItem(item) {
       model: editor.model,
       stallMs: 180000, // 移动端慢网兜底：3 分钟无任何进展才判定卡死
       onProgress: ({ percent }) => {
+        // 画布闪烁层底部进度条始终跟随真实进度（下载 0~70% → 推理 70~100%）
+        if (editor.activeId === item.id) editor.setProgress(percent);
         if (!showModelToast) return;
         if (percent < 0.7) {
           // 下载阶段（整体进度 0~70%）→ 实时显示下载百分比，避免用户以为卡死

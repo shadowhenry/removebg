@@ -669,6 +669,26 @@ input[type="range"]::-moz-range-thumb {
   animation: twinkle 1.4s ease-in-out infinite;
 }
 .sparkles__star svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+
+/* 底部高亮进度条：让用户在等待时看到真实进展 */
+.sparkles__bar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, .12);
+}
+.sparkles__bar i {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, #d9b457, #f4dc9a);
+  box-shadow: 0 0 12px rgba(230, 196, 110, .9), 0 0 4px rgba(230, 196, 110, .7);
+  transition: width .35s ease;
+}
+.sparkles__pct {
+  position: absolute; right: 12px; bottom: 14px;
+  font-size: 12px; font-weight: 700; letter-spacing: .4px;
+  font-variant-numeric: tabular-nums;
+  color: #f4dc9a;
+  text-shadow: 0 0 8px rgba(230, 196, 110, .5);
+}
 @keyframes twinkle {
   0%, 100% { opacity: .15; transform: scale(.55) rotate(-8deg); }
   50%      { opacity: 1;   transform: scale(1.05) rotate(10deg); }

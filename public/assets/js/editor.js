@@ -896,7 +896,7 @@ export class Editor {
       s.className = 'sparkles__star';
       s.innerHTML = STAR;
       s.style.left = (5 + Math.random() * 90).toFixed(1) + '%';
-      s.style.top = (5 + Math.random() * 90).toFixed(1) + '%';
+      s.style.top = (5 + Math.random() * 82).toFixed(1) + '%';
       const size = 9 + Math.random() * 17;
       s.style.width = size.toFixed(0) + 'px';
       s.style.height = size.toFixed(0) + 'px';
@@ -904,14 +904,36 @@ export class Editor {
       s.style.animationDuration = (1.1 + Math.random() * 1.2).toFixed(2) + 's';
       layer.appendChild(s);
     }
+    // 底部高亮进度条 + 百分比：等待期间哪怕没有 toast 也能看到真实进展
+    const bar = document.createElement('div');
+    bar.className = 'sparkles__bar';
+    const fill = document.createElement('i');
+    bar.appendChild(fill);
+    const pct = document.createElement('span');
+    pct.className = 'sparkles__pct';
+    pct.textContent = '0%';
+    layer.appendChild(bar);
+    layer.appendChild(pct);
     this.wrap.appendChild(layer);
     this._sparkles = layer;
+    this._sparklesFill = fill;
+    this._sparklesPct = pct;
+  }
+
+  /** 更新处理进度（0~1），驱动闪烁层底部进度条 */
+  setProgress(p) {
+    if (!this._sparkles) return;
+    const pct = Math.max(0, Math.min(100, Math.round((p || 0) * 100)));
+    if (this._sparklesFill) this._sparklesFill.style.width = pct + '%';
+    if (this._sparklesPct) this._sparklesPct.textContent = pct + '%';
   }
 
   _removeSparkles() {
     if (this._sparkles) {
       this._sparkles.remove();
       this._sparkles = null;
+      this._sparklesFill = null;
+      this._sparklesPct = null;
     }
   }
 
