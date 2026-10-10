@@ -5,3 +5,15 @@
 /*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
+
+# 代码与样式：文件名没有内容哈希，默认 max-age=14400 会让浏览器
+# 在发版后最多 4 小时仍用旧 JS（新 HTML + 旧 JS = 交互失灵）。
+# 改为每次都回源校验（命中 ETag 走 304，几乎不额外消耗流量）。
+/assets/js/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/css/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sw.js
+  Cache-Control: no-cache
