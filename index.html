@@ -150,18 +150,6 @@
         <span>下载</span>
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
       </button>
-      <div class="menu" id="download-menu" hidden>
-        <p class="menu__title">下载格式</p>
-        <label class="menu__row"><input type="radio" name="fmt" value="image/png" checked><span>PNG</span><em>透明背景</em></label>
-        <label class="menu__row"><input type="radio" name="fmt" value="image/jpeg"><span>JPG</span><em>体积最小</em></label>
-        <label class="menu__row"><input type="radio" name="fmt" value="image/webp"><span>WebP</span><em>体积中等</em></label>
-        <div class="menu__sep"></div>
-        <label class="menu__row menu__row--range" id="quality-row" hidden>
-          <span>画质</span><input type="range" id="quality" min="50" max="100" value="90"><b id="quality-val">90</b>
-        </label>
-        <div class="menu__sep"></div>
-        <button type="button" class="btn-primary btn-primary--full" id="btn-do-download">下载图片</button>
-      </div>
     </div>
   </div>
 
@@ -283,6 +271,21 @@
     <p class="progress-card__meta" id="progress-meta">0%</p>
     <p class="progress-card__hint" id="progress-hint">图片不会离开本机</p>
   </div>
+</div>
+
+<!-- 下载格式菜单：必须放在 .toolbar 之外（fixed 定位），
+     否则会被工具栏的 overflow 滚动容器整体裁剪，表现为「点了没反应」 -->
+<div class="menu" id="download-menu" hidden>
+  <p class="menu__title">下载格式</p>
+  <label class="menu__row"><input type="radio" name="fmt" value="image/png" checked><span>PNG</span><em>透明背景</em></label>
+  <label class="menu__row"><input type="radio" name="fmt" value="image/jpeg"><span>JPG</span><em>体积最小</em></label>
+  <label class="menu__row"><input type="radio" name="fmt" value="image/webp"><span>WebP</span><em>体积中等</em></label>
+  <div class="menu__sep"></div>
+  <label class="menu__row menu__row--range" id="quality-row" hidden>
+    <span>画质</span><input type="range" id="quality" min="50" max="100" value="90"><b id="quality-val">90</b>
+  </label>
+  <div class="menu__sep"></div>
+  <button type="button" class="btn-primary btn-primary--full" id="btn-do-download">下载图片</button>
 </div>
 
 <div class="toast" id="toast" hidden></div>

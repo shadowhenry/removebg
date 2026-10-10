@@ -457,10 +457,12 @@ body.is-editing .topbar { display: none; }
 .download { position: relative; flex: none; }
 .download #btn-download { padding-right: 10px; }
 
+/* 下载格式菜单：挂在 body 下、fixed 定位（由 JS 按按钮位置摆放）。
+   不能放进 .toolbar —— 它是 overflow 滚动容器，absolute 子元素会被整体裁剪 */
 .menu {
-  position: absolute;
-  top: calc(100% + 10px); right: 0;
-  width: 216px;
+  position: fixed;
+  z-index: 40;
+  width: min(216px, calc(100vw - 24px));
   padding: 10px;
   border-radius: var(--r-md);
   background: #fff;
@@ -886,7 +888,7 @@ input[type="range"]::-moz-range-thumb {
     left: 12px; right: 12px;
     transform: none;
     max-width: none;
-    gap: 0; padding: 4px 5px;
+    gap: 0; padding: 4px 42px 4px 5px;
     border-radius: 18px;
   }
   .tool { padding: 0 9px; font-size: 12.5px; gap: 4px; }
@@ -903,15 +905,6 @@ input[type="range"]::-moz-range-thumb {
     width: calc(100vw - 24px);
     max-height: calc(100vh - 230px);
     padding: 18px 16px 16px;
-  }
-  .menu {
-    position: fixed;
-    z-index: 27;
-    left: 50%; right: auto;
-    top: calc(102px + env(safe-area-inset-top, 0px));
-    width: min(240px, calc(100vw - 48px));
-    transform: translateX(-50%);
-    animation: popInCenter .16s var(--ease) both;
   }
 
   .stage { inset: calc(104px + env(safe-area-inset-top, 0px)) 10px calc(86px + env(safe-area-inset-bottom, 0px)); }

@@ -563,21 +563,32 @@ export class Editor {
   }
 
   async download(mime, quality) {
-    if (!this.active) return;
-    const blob = await this._exportBlob(mime, quality);
-    if (!blob) {
+    const item = this.active;
+    if (!item) return;
+    let url = null;
+    try {
+      const blob = await this._exportBlob(mime, quality);
+      if (!blob) throw new Error('canvas toBlob 返回空结果');
+      const name = this._fileName(mime);
+      url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      if ('download' in a) {
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        /* 旧版 iOS 等不支持 download 属性：新窗口打开，由用户长按/右键保存 */
+        window.open(url, '_blank');
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 8000);
+      toast(`已导出 ${name}`);
+    } catch (err) {
+      console.error('导出失败', err);
+      if (url) URL.revokeObjectURL(url);
       toast('导出失败，请重试');
-      return;
     }
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = this._fileName(mime);
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
-    toast(`已导出 ${a.download}`);
   }
 
   /* -------------------------------------------------------- 面板与控件 */
@@ -608,8 +619,9 @@ export class Editor {
         const atEnd = toolbar.scrollLeft + toolbar.clientWidth >= toolbar.scrollWidth - 8;
         moreBtn.hidden = !overflow || atEnd;
       };
+      /* 点击提示 → 滑到右端（滑到头后提示自动隐藏，下载按钮不再被遮挡） */
       moreBtn.addEventListener('click', () => {
-        toolbar.scrollBy({ left: Math.round(toolbar.clientWidth * 0.8), behavior: 'smooth' });
+        toolbar.scrollTo({ left: toolbar.scrollWidth, behavior: 'smooth' });
       });
       toolbar.addEventListener('scroll', updateMore, { passive: true });
       window.addEventListener('resize', updateMore);
@@ -741,13 +753,24 @@ export class Editor {
     const dlBtn = document.getElementById('btn-download');
     const dlMenu = document.getElementById('download-menu');
     if (dlBtn && dlMenu) {
+      this._dlBtn = dlBtn;
+      this._dlMenu = dlMenu;
       dlBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        dlMenu.hidden = !dlMenu.hidden;
+        if (dlMenu.hidden) this.openDownloadMenu();
+        else this.closeDownloadMenu();
       });
       document.addEventListener('click', (e) => {
-        if (!dlMenu.hidden && !dlMenu.contains(e.target) && e.target !== dlBtn) dlMenu.hidden = true;
+        if (!dlMenu.hidden && !dlMenu.contains(e.target) && !dlBtn.contains(e.target)) {
+          dlMenu.hidden = true;
+        }
       });
+      /* 工具栏横向滚动 / 窗口尺寸变化时收起，避免菜单悬空错位 */
+      const toolbar = document.querySelector('.toolbar');
+      if (toolbar) {
+        toolbar.addEventListener('scroll', () => this.closeDownloadMenu(), { passive: true });
+      }
+      window.addEventListener('resize', () => this.closeDownloadMenu());
     }
 
     const qualityRow = document.getElementById('quality-row');
@@ -777,6 +800,35 @@ export class Editor {
     }
 
     this._syncBgBlocks();
+  }
+
+  /* 下载格式菜单（body 级 fixed 定位，需按按钮位置摆放） */
+  openDownloadMenu() {
+    const btn = this._dlBtn;
+    const menu = this._dlMenu;
+    if (!btn || !menu) return;
+    menu.hidden = false;
+    /* 先显示再测量，再按按钮位置摆放，并钳制在视口内 */
+    const r = btn.getBoundingClientRect();
+    const margin = 8;
+    const mw = menu.offsetWidth;
+    const mh = menu.offsetHeight;
+    let left = r.right - mw; // 默认与按钮右对齐
+    left = Math.min(Math.max(left, margin), window.innerWidth - mw - margin);
+    let top = r.bottom + 10;
+    if (top + mh > window.innerHeight - margin) {
+      top = Math.max(margin, r.top - mh - 10);
+    }
+    menu.style.left = `${Math.round(left)}px`;
+    menu.style.top = `${Math.round(top)}px`;
+  }
+
+  closeDownloadMenu() {
+    if (this._dlMenu) this._dlMenu.hidden = true;
+  }
+
+  get downloadMenuOpen() {
+    return !!this._dlMenu && !this._dlMenu.hidden;
   }
 
   openPanel(name) {

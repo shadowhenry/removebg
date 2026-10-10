@@ -31,6 +31,7 @@ function activateHome() {
   viewHome.hidden = false;
   viewEditor.hidden = true;
   editor.closePanel();
+  editor.closeDownloadMenu();
   if (topbar) topbar.style.display = '';
 }
 
@@ -285,7 +286,9 @@ document.addEventListener('keydown', (e) => {
   const mod = e.metaKey || e.ctrlKey;
 
   if (e.key === 'Escape') {
-    if (editor.panelOpen) {
+    if (editor.downloadMenuOpen) {
+      editor.closeDownloadMenu();
+    } else if (editor.panelOpen) {
       editor.closePanel();
     } else if (editing) {
       goHome();

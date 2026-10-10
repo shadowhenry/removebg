@@ -7,7 +7,7 @@
  *  · 模型权重由 @imgly/background-removal 自行缓存，这里不做拦截
  */
 
-const VERSION = 'v1.2.1';
+const VERSION = 'v1.2.2';
 const CACHE = `removebg-${VERSION}`;
 
 const SHELL = [
